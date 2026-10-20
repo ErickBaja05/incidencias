@@ -51,4 +51,26 @@ class UsuarioDAO
 
         return null;
     }
+
+    /**
+     * Inserta un nuevo usuario con la contraseña hasheada.
+     * Retorna true en caso de éxito, false si falla (por ejemplo, usuario duplicado).
+     */
+    public function insertar(string $username, string $plainPassword): bool
+    {
+        $hash = password_hash($plainPassword, PASSWORD_DEFAULT);
+
+        $sql = "INSERT INTO usuario (username, passwd) VALUES (:username, :passwd)";
+        $stmt = $this->db->prepare($sql);
+
+        try {
+            return $stmt->execute([
+                ':username' => $username,
+                ':passwd' => $hash
+            ]);
+        } catch (PDOException $e) {
+            // Manejo de error si el username ya existe o hay falla de conexión
+            return false;
+        }
+    }
 }
