@@ -2,6 +2,11 @@
 
 session_start();
 
+#SOLO SE PUEDE VOLVER AL INDEX SI ESQUE SE CIERRA LA SESION, SI NO, PUES NO!
+if (!empty($_SESSION['isLoggedIn'])) {
+    header('Location: listar.php');
+    exit;
+}
 
 $isError = false;
 if (isset($_SESSION['errorCode'])) {
