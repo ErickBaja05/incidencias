@@ -1,4 +1,37 @@
 <?php 
+session_start();
+#Validar la autenticacion del usuario 
+if(!isset($_SESSION['usuario'])){
+    header("Location: index.php");
+    exit();
+}
+
+#Procesar el formulario
+if($_SERVER['REQUEST_METHOD']==='POST'){
+    $nombre = $_POST['nombre'] ?? "";
+    $descripcion = $_POST['descripcion'] ?? "";
+    $prioridad =$_POST['prioridad']?? "";
+
+    $hay_errores = false;
+
+    if(empty($nombre)|| preg_match('/[\$\\\=]/',$nombre)){
+        $hay_errores = true;
+    }
+
+    if(empty($descripcion)|| preg_match('/[$\[\]\\\=]/', $descripcion)){
+        $hay_errores =true;
+    }
+
+    if(empty($prioridad)|| !in_array($prioridad, ['alta', 'media','baja'],true)){
+        $hay_errores = true;
+    }
+
+    if($hay_errores){
+        header("Location: 400.php");
+        exit();
+    }
+
+}
 
 ?>
 
@@ -31,9 +64,9 @@
                 <label for ="prioridad" >Prioridad: </label><br>
                 <select id="prioridad" name ="prioridad" required>
                     <option value ="" >Seleccione una opción... </option>
-                    <option value ="1">Baja </option>
-                    <option value ="2">Media </option>
-                    <option value ="3">Alta </option>
+                    <option value ="alta">Alta </option>
+                    <option value ="media">Media </option>
+                    <option value ="baja">Baja </option>
                 </select>
                 <br><br>
 
@@ -42,7 +75,7 @@
         </form>
 
         <br>
-        <a href= "Listar.php"> Regresar al listado</a>
+        <a href= "listar.php"> Regresar al listado</a>
 
     </body>
 </html>
