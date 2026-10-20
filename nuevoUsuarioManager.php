@@ -2,7 +2,7 @@
 
 session_start();
 
-require_once __DIR__ . '/UsuarioDAO.php';
+require_once __DIR__ . '/bdd/UsuarioDAO.php';
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     header("Location: cerrarsesion.php");
@@ -21,7 +21,7 @@ if ($_SESSION['username'] !== 'admin') {
 
 }
 
-$usuarioDAO = new usuarioDAO();
+$usuarioDAO = new UsuarioDAO();
 
 # 0 ---> FALTAN DATOS
 

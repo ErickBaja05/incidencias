@@ -27,7 +27,7 @@ $username = $_SESSION['username'];
     <h1>Incidencia Creada - 201 created </h1>
     <hr>
     <h2>Usuario Loggeado: <?php echo $username ?></h2>
-    <a href="listar.php">Ir al listado de incidencias</a>
+    <a href="listar.php">Ir al listado de incidencias</a> <br>
     <a href="cerrarsesion.php">Cerrar Sesion</a>
 </body>
 

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedin'] == false) {
+if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] == false) {
     header('Location: index.php');
     exit;
 }
@@ -43,14 +43,17 @@ $username = $_SESSION['username'];
     <h1>Formulario para el registro de usuarios</h1>
     <hr>
     <h2>Usuario Loggeado: <?php echo $username ?></h2>
+    <a href="cerrarsesion.php">Cerrar Sesion</a> <br>
+    <br>
     <form method="POST" action="nuevoUsuarioManager.php">
         <fieldset>
             <legend>Complete todos los campos para crear un nuevo usuario</legend>
 
             <label for="username">Nombre de Usuario</label><br>
-            <input type="text" placeholder="Nombre de Usuario" name="username" id="username" required>
+            <input type="text" placeholder="Nombre de Usuario" name="username" id="username" required> <br>
             <label for="password">Contraseña</label><br>
-            <input type="password" placeholder="Constraseña" name="password" id="password" required>
+            <input type="password" placeholder="Constraseña" name="password" id="password" required> <br><br>
+            <input type="submit" value="Registrar Usuario">
         </fieldset>
     </form>
     <p>
@@ -58,9 +61,9 @@ $username = $_SESSION['username'];
 
         if ($isError) {
             if ($errorCode === '0') {
-                echo "SE NECESITAN TODOS LOS CAMPOS PARA REGISTRAR UN USUARIO";
+                echo "ERROR: SE NECESITAN TODOS LOS CAMPOS PARA REGISTRAR UN USUARIO";
             } elseif ($errorCode === '1') {
-                echo "EL NOMBRE DE USUARIO YA ESTÁ EN USO";
+                echo "ERROR: YA EXISTE UN USUARIO CON EL NOMBRE DE USUARIO PROPORCIONADO";
             } elseif ($errorCode === '2') {
                 echo "ERROR AL GUARDAR EL USUARIO EN LA BASE DE DATOS";
             } else {

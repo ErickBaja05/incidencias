@@ -18,7 +18,7 @@ class UsuarioDAO
      */
     public function findByUsername(string $username): ?Usuario
     {
-        $sql = "SELECT username, passwd FROM usuario WHERE username = :username LIMIT 1";
+        $sql = "SELECT username, passwd FROM usuarios WHERE username = :username LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':username' => $username]);
 
@@ -60,7 +60,7 @@ class UsuarioDAO
     {
         $hash = password_hash($plainPassword, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO usuario (username, passwd) VALUES (:username, :passwd)";
+        $sql = "INSERT INTO usuarios (username, passwd) VALUES (:username, :passwd)";
         $stmt = $this->db->prepare($sql);
 
         try {
