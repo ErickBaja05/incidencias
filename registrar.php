@@ -27,6 +27,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     }
 
     if($hay_errores){
+        $_SESSION['error_400'] = true;
         header("Location: 400.php");
         exit();
     }
@@ -50,11 +51,13 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             header("Location: 201.php");
             exit();
         } else {
+            $_SESSION['error_500'] = true;
             header("Location: 500.php");
             exit();
         }
     } catch (Throwable $e) {
         // Redirigir a 500.php en caso de error o excepción de base de datos
+        $_SESSION['error_500'] = true;
         header("Location: 500.php");
         exit();
     }
