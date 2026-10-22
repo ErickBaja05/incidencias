@@ -43,6 +43,7 @@ $username = $_SESSION['username'];
     <h1>Formulario para el registro de usuarios</h1>
     <hr>
     <h2>Usuario Loggeado: <?php echo $username ?></h2>
+    <a href="listar.php">Regresar al listado</a> <br>
     <a href="cerrarsesion.php">Cerrar Sesion</a> <br>
     <br>
     <form method="POST" action="nuevoUsuarioManager.php">
