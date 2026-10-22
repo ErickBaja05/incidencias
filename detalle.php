@@ -1,73 +1,84 @@
 <?php
-
 session_start();
 
-if(!isset($_SESSION['nombre']) && !isset($_SESSION['clave'])){
-    header("Location: index.php");
+# Se valida que el usuario esté autenticado mediante la bandera estándar 'isLoggedIn'.
+if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] == false) {
+    header('Location: index.php');
     exit;
 }
 
-#Importamos los archivos de la base de datos que se va a utilizar para mostrar el detalle de la incidencia
-require_once 'bdd/DatabaseConfig.php';
-require_once 'bdd/DatabaseConnection.php';
-require_once 'bdd/Incidencia.php';
-require_once 'bdd/IncidenciaDAO.php';
+# Se importa el Data Access Object (DAO) de incidencias. 
+# IncidenciaDAO ya incluye internamente DatabaseConnection e Incidencia.
+require_once __DIR__ . '/bdd/IncidenciaDAO.php';
 
-#Capturamos el id de la incidencia que se pasa por GET
-$id_incidencia = isset($_GET['id']) ? $_GET['id'] : null;
-
-#Consultamos la incidencia en la base de datos utilizando el id capturado
-$incidencia = null;
-if ($id > 0) {
-    $dao = new IncidenciaDAO();
-    $incidencia = $dao -> findById($id); 
-}
-
-#Si la incidencia no existe o no se proporcionó un ID válido, se redirige al listado de incidencias
-if (!$incidencia) {
-    header("Location: listar.php");
+# Se valida que el id recibido sea un número entero para evitar inyecciones o errores.
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if (!$id) {
+    header('Location: listar.php');
     exit;
 }
 
+# Se ejecuta la consulta a MariaDB/MySQL mediante el método findById pasándole el ID.
+$incidenciaDAO = new IncidenciaDAO();
+$incidencia = $incidenciaDAO->findById((int) $id);
+
+$username = $_SESSION['username'];
+
+# Si la incidencia no existe o pertenece a otro usuario (salvo que sea admin), se deniega el acceso.
+if (!$incidencia || ($incidencia->getUsuarioUsername() !== $username && $username !== 'admin')) {
+    header('Location: listar.php');
+    exit;
+}
 ?>
 
+
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Detalle de Incidencia</title>
-    </head>
-    <body>
-        <h1>Bienvenid@ <?php echo $_SESSION['nombre'] ?> </h1>
-        <h2>Sistema de Incidencias Técnicas (SIT)</h2>
-        <p><a href="cerrarsesion.php">Cerrar Sesion</a></p>
-        <hr>
-        <h3>Detalle de la Incidencia</h3>
-        <hr>
-        <fieldset>
-            <legend><strong>Información del Ticket #<?php echo htmlspecialchars($incidencia->getId()); ?></strong></legend>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Incidencia</title>
+</head>
+<body>
+    <h1>Sistema de Incidencias Técnicas (SIT)</h1>
+    <h2>Usuario Loggeado: <?php echo htmlspecialchars($username); ?></h2>
+    
+    <p>
+        <a href="listar.php">Regresar al listado</a><br>
+        <?php if ($username === 'admin') { ?>
+            <a href="registrarUsuario.php">Registrar nuevo usuario</a><br>
+        <?php } ?>
+        <a href="cerrarsesion.php">Cerrar Sesion</a>
+    </p>
 
-            <p>
-                <strong>ID:</strong> 
-                <?php echo htmlspecialchars($incidencia->getId()); ?>
-            </p>
+    <hr>
+    <h3>Detalle de la Incidencia</h3>
+    <hr>
 
-            <p>
-                <strong>Nombre:</strong> 
-                <?php echo htmlspecialchars($incidencia->getNombre()); ?>
-            </p>
+    <fieldset>
+        <legend><strong>Información del Ticket #<?php echo htmlspecialchars($incidencia->getId()); ?></strong></legend>
 
-            <p>
-                <strong>Descripción:</strong><br>
-                <?php echo nl2br(htmlspecialchars($incidencia->getDescripcion())); ?>
-            </p>
+        <p>
+            <strong>ID:</strong> 
+            <?php echo htmlspecialchars($incidencia->getId()); ?>
+        </p>
 
-            <p>
-                <strong>Prioridad:</strong> 
-                <?php echo htmlspecialchars($incidencia->getPrioridad()); ?>
-            </p>
-        </fieldset>
-        <hr>
-        <p><a href="listar.php">Regresar al Listado</a></p>
-    </body>
+        <p>
+            <strong>Nombre:</strong> 
+            <?php echo htmlspecialchars($incidencia->getNombre()); ?>
+        </p>
+
+        <p>
+            <strong>Descripción:</strong><br>
+            <?php echo nl2br(htmlspecialchars($incidencia->getDescripcion())); ?>
+        </p>
+
+        <p>
+            <strong>Prioridad:</strong> 
+            <?php echo htmlspecialchars($incidencia->getPrioridad()); ?>
+        </p>
+    </fieldset>
+
+    <hr>
+    <p><a href="listar.php">Regresar al Listado</a></p>
+</body>
 </html>
