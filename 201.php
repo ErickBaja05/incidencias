@@ -16,17 +16,7 @@ if (!isset($_SESSION['incidencia_creada']) || $_SESSION['incidencia_creada'] == 
     exit;
 }
 
-# ESTA BANDERA ES DE USO ÚNICO Y PUES SE LA ELIMINA UNA VEZ QUE SE LA CONSUMA.
-
-unset($_SESSION['incidencia_creada']);
-
-// 2. Verificar que realmente acaba de crear una incidencia (bloquea acceso directo por URI)
-if (empty($_SESSION['incidencia_creada'])) {
-    header('Location: listar.php');
-    exit;
-}
-
-// 3. Consumir la bandera (para que solo sirva una vez)
+# ESTA BANDERA ES DE USO ÚNICO Y SE LA ELIMINA UNA VEZ QUE SE LA CONSUMA.
 unset($_SESSION['incidencia_creada']);
 
 http_response_code(201);
