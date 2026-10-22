@@ -1,7 +1,7 @@
 <?php 
 session_start();
 #Validar la autenticacion del usuario 
-if(!isset($_SESSION['username'])){
+if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] === false) {
     header("Location: index.php");
     exit();
 }
